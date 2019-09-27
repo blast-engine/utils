@@ -11,6 +11,7 @@ export const valuesWithKey = obj => keys(obj).map(k => merge(obj[k], { _key: k }
 export const shallowClone = merge
 export const arrayClone = arr => arr.slice(0)
 export const kv = obj => keys(obj).map(k => ({ k, v: obj[k] }))
+export const asArray = obj => Object.keys(obj).map(k => ({ ...obj[k], _key: k }))
 export const pairs = kv
 export const kvr = kv => kv.reduce((o, { k, v }) => merge(o, { [k]: v }), {}) 
 export const objMap = (obj, fn) => kv(obj).reduce((o, { k, v }) => merge(o, { [k]: fn(v, k) }), {})
@@ -26,6 +27,9 @@ export const unique = (...arrs) => Array.from(new Set(arrs.reduce((c, a) => c.co
 export const arrayOf = (length = 0) => (new Array(length)).fill(true)
 export const ellipsis = (str = '', maxLength) =>
   (str.length > maxLength) ? str.substring(0, maxLength).trim() + '...' : str
+export const distinct = unique
+export const timeout = (fn = () => null, ms = 0) => 
+  new Promise(resolve => setTimeout(async () => { await fn(); resolve() }, ms))
 
 export class Emitter {
   constructor() { this.handlers = [] }
