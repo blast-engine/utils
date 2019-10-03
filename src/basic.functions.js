@@ -1,3 +1,8 @@
+import safeAccess from 'safe-access'
+
+export const safe = safeAccess
+export const get = safe
+export const g = get
 export const assign = Object.assign
 export const keys = obj => Object.keys(obj || {})
 export const k = keys
@@ -30,6 +35,30 @@ export const ellipsis = (str = '', maxLength) =>
 export const distinct = unique
 export const timeout = (fn = () => null, ms = 0) => 
   new Promise(resolve => setTimeout(async () => { await fn(); resolve() }, ms))
+
+export const compareByKeyValue = (obj1, obj2) => {
+  const k1 = k(obj1)
+  const k2 = k(obj2)
+  return (
+    k1.length === k2.length
+    && k1.every(k => obj1[k] === obj2[k])
+  )
+}
+
+export const sameRef = (fn, isEquivalent = compareByKeyValue) => {
+  let _cachedResult
+  return (...args) => {
+    
+    const newResult = fn(...args)
+
+    if (
+      typeof _cachedResult === 'undefined' 
+      || !isEquivalent(_cachedResult, newResult)
+    ) { _cachedResult = newResult }
+
+    return _cachedResult
+  }
+}
 
 export class Emitter {
   constructor() { this.handlers = [] }
