@@ -54,7 +54,7 @@ export const arraysAreSame = (arr1, arr2) => {
   return true
 }
 
-export const areEquivalent = (thing1, thing2) => {
+export const areShallowEquivalent = (thing1, thing2) => {
   if (typeof thing1 !== typeof thing2) return false
   if (Array.isArray(thing1) && !Array.isArray(thing2)) return false
   if (Array.isArray(thing2) && !Array.isArray(thing1)) return false
@@ -63,7 +63,11 @@ export const areEquivalent = (thing1, thing2) => {
   return thing1 === thing2
 }
 
-export const sameRef = (fn, isEquivalent = areEquivalent) => {
+export const compareWithJSONStringify = (thing1, thing2) => {
+  return JSON.stringify(thing1) === JSON.stringify(thing2)
+}
+
+export const sameRef = (fn, isEquivalent = areShallowEquivalent) => {
   let _cachedResult
   return (...args) => {
     
