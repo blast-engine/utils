@@ -37,6 +37,8 @@ export const timeout = (fn = () => null, ms = 0) =>
   new Promise(resolve => setTimeout(async () => { await fn(); resolve() }, ms))
 
 export const compareByKeyValue = (obj1, obj2) => {
+  if (obj1 === null && obj2 !== null) return false
+  if (obj2 === null && obj1 !== null) return false
   const k1 = k(obj1)
   const k2 = k(obj2)
   return (
@@ -45,7 +47,23 @@ export const compareByKeyValue = (obj1, obj2) => {
   )
 }
 
-export const sameRef = (fn, isEquivalent = compareByKeyValue) => {
+export const arraysAreSame = (arr1, arr2) => {
+  if (arr1.length !== arr2.length) return false
+  for (let i = 0; i < arr1.length; i++)
+    if (arr1[i] !== arr2[i]) return false
+  return true
+}
+
+export const areEquivalent = (thing1, thing2) => {
+  if (typeof thing1 !== typeof thing2) return false
+  if (Array.isArray(thing1) && !Array.isArray(thing2)) return false
+  if (Array.isArray(thing2) && !Array.isArray(thing1)) return false
+  if (Array.isArray(thing1)) return arraysAreSame(thing1, thing2)
+  if (typeof thing1 === 'object') return compareByKeyValue(thing1, thing2)
+  return thing1 === thing2
+}
+
+export const sameRef = (fn, isEquivalent = areEquivalent) => {
   let _cachedResult
   return (...args) => {
     
