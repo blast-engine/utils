@@ -82,6 +82,26 @@ export const sameRef = (fn, isEquivalent = areShallowEquivalent) => {
   }
 }
 
+export const createCallLimit = max => {
+  let count
+  return () => {
+    if (count++ > max) return false
+    return true
+  }
+}
+
+export const createPropComparator = () => {
+  let last = {}
+  return next => {
+    const allKeys = distinct([ ...k(last), ...k(next) ])
+    const updatedProps = allKeys
+      .filter(key => last[key] !== next[key])
+      .map(key => ({ key, prev: last[key], next: next[key] }))
+    last = next
+    return updatedProps
+  }
+}
+
 export class Emitter {
   constructor() { this.handlers = [] }
   subscribe(handler) { this.handlers.push(handler) }
