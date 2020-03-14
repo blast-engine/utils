@@ -2,7 +2,6 @@ import safeAccess from 'safe-access'
 
 export const safe = safeAccess
 export const get = safe
-export const g = get
 export const assign = Object.assign
 export const keys = obj => Object.keys(obj || {})
 export const k = keys
