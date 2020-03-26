@@ -34,13 +34,57 @@ const _applyTransitionMap = (state, transitionMap) => {
 
 }
 
-export const get = (obj, path) => safe(obj, path)
-export const set = (obj, transitionMap) => _applyTransitionMap(obj, transitionMap)
-export const unset = (obj, paths) => {
+export const get = (obj = {}, path) => safe(obj, path)
+export const set = (obj = {}, transitionMap) => _applyTransitionMap(obj, transitionMap)
+export const unset = (obj = {}, paths) => {
   const pathsArray = Array.isArray(paths) ? paths : [paths]
   const transitionMap = pathsArray.reduce((tm, p) => ({ [p]: DELETE_FLAG, ...tm }), {})
   return set(obj, transitionMap)
 }
+
+export class ImmutableReadOnly {
+  constructor(raw) {
+    this._raw = raw
+  }
+
+  static wrap(raw) {
+    return new this(raw)
+  }
+
+  wrap(raw) {
+    return this.constructor.wrap(raw)
+  }
+
+  raw() {
+    return this._raw
+  }
+
+  get(...args) {
+    return this._get(...args)
+  }
+
+  _get(path) {
+    if (!path) return this._raw
+    return g(this._raw, path)
+  }
+}
+
+export class Immutable extends ImmutableReadOnly {
+  set(...args) {
+    return this._set(...args)
+  }
+
+  _set(transitionMapOrPath, valueOrNothing) {
+    let transitionMap
+    if (typeof transitionMapOrPath === 'object') 
+      transitionMap = transitionMapOrPath
+    else if (typeof transitionMapOrPath === 'string') 
+      transitionMap = { [transitionMapOrPath]: valueOrNothing }
+
+    return this.wrap(s(this._get(), transitionMap))
+  }
+}
+
 
 export const g = get
 export const s = set
