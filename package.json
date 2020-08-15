@@ -1,6 +1,6 @@
 {
   "name": "@blast-engine/utils",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "license": "UNLICENSED",
   "main": "dist/index.js",
   "scripts": {
@@ -41,6 +41,9 @@
       "react-app"
     ]
   },
+  "files": [
+    "dist"
+  ],
   "devDependencies": {
     "babel-core": "6.26.0",
     "babel-jest": "20.0.3",
