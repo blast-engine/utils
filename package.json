@@ -1,8 +1,8 @@
 {
   "name": "@blast-engine/utils",
-  "version": "0.1.8",
+  "version": "0.2.0",
   "license": "UNLICENSED",
-  "main": "dist/index.js",
+  "main": "dist/utils.js",
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
