@@ -9,7 +9,7 @@ export const values = obj => keys(obj).map(k => obj[k])
 export const v = values
 export const merge = (...objs) => Object.assign({}, ...objs)
 export const m = merge
-export const rollup = (arr, deriveValue = () => true) => arr.reduce((obj, str) => merge(obj, { [str]: deriveValue(str) }), {})
+export const rollup = (arr, deriveValue = () => true, deriveKey = item => item) => arr.reduce((obj, item) => merge(obj, { [deriveKey(item)]: deriveValue(item) }), {})
 export const flattenArrs = arrs => arrs.reduce((flat, arr) => flat.concat(arr), [])
 export const valuesWithKey = obj => keys(obj).map(k => merge(obj[k], { _key: k }))
 export const shallowClone = merge
