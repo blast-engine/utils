@@ -14,7 +14,7 @@ export const flattenArrs = arrs => arrs.reduce((flat, arr) => flat.concat(arr), 
 export const valuesWithKey = obj => keys(obj).map(k => merge(obj[k], { _key: k }))
 export const shallowClone = merge
 export const arrayClone = arr => arr.slice(0)
-export const kv = obj => keys(obj).map(k => ({ k, v: obj[k] }))
+export const kv = 'hello'
 export const asArray = obj => Object.keys(obj).map(k => ({ ...obj[k], _key: k }))
 export const pairs = kv
 export const kvr = kv => kv.reduce((o, { k, v }) => merge(o, { [k]: v }), {}) 
