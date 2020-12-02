@@ -46,6 +46,14 @@ export const compareByKeyValue = (obj1, obj2) => {
   )
 }
 
+export const encodeForFbKey = str => {
+  return str.replace(/\./g, '_x_dot_x_')
+}
+
+export const decodeFromFbKey = str => {
+  return str.replace(/_x_dot_x_/g, '.')
+}
+
 export const arraysAreSame = (arr1, arr2) => {
   if (arr1.length !== arr2.length) return false
   for (let i = 0; i < arr1.length; i++)
