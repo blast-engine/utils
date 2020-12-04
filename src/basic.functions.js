@@ -14,7 +14,7 @@ export const flattenArrs = arrs => arrs.reduce((flat, arr) => flat.concat(arr), 
 export const valuesWithKey = obj => keys(obj).map(k => merge(obj[k], { _key: k }))
 export const shallowClone = merge
 export const arrayClone = arr => arr.slice(0)
-export const kv = 'hello'
+export const kv = obj => keys(obj).map(k => ({ k, v: obj[k] }))
 export const asArray = obj => Object.keys(obj).map(k => ({ ...obj[k], _key: k }))
 export const pairs = kv
 export const kvr = kv => kv.reduce((o, { k, v }) => merge(o, { [k]: v }), {}) 
@@ -34,6 +34,17 @@ export const ellipsis = (str = '', maxLength) =>
 export const distinct = unique
 export const timeout = (fn = () => null, ms = 0) => 
   new Promise(resolve => setTimeout(async () => { await fn(); resolve() }, ms))
+
+export const findUndefined = obj => { 
+  const undef = kv(obj).find(({ v }) => v === undefined)
+  if (!undef) return null
+  else return undef.k
+}
+
+export const ensureParamsProvided = params => {
+  const paramNotProvided = findUndefined(params)
+  if (paramNotProvided) throw new Error(`${paramNotProvided} not provided`)
+}
 
 export const compareByKeyValue = (obj1, obj2) => {
   if (obj1 === null && obj2 !== null) return false
