@@ -10,7 +10,9 @@ export const v = values
 export const merge = (...objs) => Object.assign({}, ...objs)
 export const m = merge
 export const rollup = (arr, deriveValue = () => true, deriveKey = item => item) => arr.reduce((obj, item) => merge(obj, { [deriveKey(item)]: deriveValue(item) }), {})
+export const rollupWithKey = (arr = [], deriveKey = () => null) => rollup(arr, item => item, deriveKey)
 export const flattenArrs = arrs => arrs.reduce((flat, arr) => flat.concat(arr), [])
+export const flattenDeep = arr => arr.reduce((f, i) => f.concat(Array.isArray(i) ? flattenDeep(i) : i), [])
 export const valuesWithKey = obj => keys(obj).map(k => merge(obj[k], { _key: k }))
 export const shallowClone = merge
 export const arrayClone = arr => arr.slice(0)
@@ -65,12 +67,27 @@ export const decodeFromFbKey = str => {
   return str.replace(/_x_dot_x_/g, '.')
 }
 
-export const arraysAreSame = (arr1, arr2) => {
+export const thingsAreStrictlyEqual = (i1, i2) => {
+  return i1 === i2
+}
+
+export const arraysHaveSameItems = (arr1, arr2, itemsAreEqual = thingsAreStrictlyEqual) => {
+  if (!Array.isArray(arr1) || !Array.isArray(arr2)) return false
+  if (arr1.length !== arr2.length) return false
+  return arr1.every(i1 => arr2.some(i2 => itemsAreEqual(i1, i2)))
+}
+
+export const arraysAreSame = (arr1, arr2, itemsAreEqual = thingsAreStrictlyEqual) => {
+  if (!Array.isArray(arr1) || !Array.isArray(arr2)) return false
   if (arr1.length !== arr2.length) return false
   for (let i = 0; i < arr1.length; i++)
-    if (arr1[i] !== arr2[i]) return false
+    if (!itemsAreEqual(arr1[i],arr2[i])) return false
   return true
 }
+
+export const arrayComparator = 
+  (itemsAreEqual = thingsAreStrictlyEqual) =>
+  (arr1, arr2) => arraysAreSame(arr1, arr2, itemsAreEqual)
 
 export const areShallowEquivalent = (thing1, thing2) => {
   if (typeof thing1 !== typeof thing2) return false
@@ -97,6 +114,16 @@ export const sameRef = (fn, isEquivalent = areShallowEquivalent) => {
     ) { _cachedResult = newResult }
 
     return _cachedResult
+  }
+}
+
+// same ref
+export const sr = (checkSame = (v1, v2) => v1 === v2) => {
+  let cached
+  return val => {
+    const isSame = checkSame(cached, val)
+    if (!isSame) cached = val
+    return cached
   }
 }
 
