@@ -9,14 +9,32 @@ export const values = obj => keys(obj).map(k => obj[k])
 export const v = values
 export const merge = (...objs) => Object.assign({}, ...objs)
 export const m = merge
-export const rollup = (arr, deriveValue = () => true, deriveKey = item => item) => arr.reduce((obj, item) => merge(obj, { [deriveKey(item)]: deriveValue(item) }), {})
+export const rollup = (arr, deriveValue, deriveKey) => {
+  const defaultDeriveValue = () => true
+  const defaultDeriveKey = item => ('' + item)
+  let args = {}
+  if (Array.isArray(arr)) {
+    args.arr = arr
+    args.deriveValue = deriveValue || defaultDeriveValue
+    args.deriveKey = deriveKey || defaultDeriveKey
+  } else if (typeof arr === 'object' && !!arr) {
+    args.arr = arr.array
+    args.deriveValue = arr.deriveValue || defaultDeriveValue
+    args.deriveKey = arr.deriveKey || defaultDeriveKey
+  }
+  return args.arr.reduce(
+    (obj, item) => merge(obj, { 
+      [args.deriveKey(item)]: args.deriveValue(item) 
+    }), {}
+  )
+}
 export const rollupWithKey = (arr = [], deriveKey = () => null) => rollup(arr, item => item, deriveKey)
 export const flattenArrs = arrs => arrs.reduce((flat, arr) => flat.concat(arr), [])
 export const flattenDeep = arr => arr.reduce((f, i) => f.concat(Array.isArray(i) ? flattenDeep(i) : i), [])
 export const valuesWithKey = obj => keys(obj).map(k => merge(obj[k], { _key: k }))
 export const shallowClone = merge
 export const arrayClone = arr => arr.slice(0)
-export const kv = obj => keys(obj).map(k => ({ k, v: obj[k] }))
+export const kv = (obj, propMap = { k: 'k', v: 'v' }) => keys(obj).map(k => ({ [propMap['k']]: k, [propMap['v']]: obj[k] }))
 export const asArray = obj => Object.keys(obj).map(k => ({ ...obj[k], _key: k }))
 export const pairs = kv
 export const kvr = kv => kv.reduce((o, { k, v }) => merge(o, { [k]: v }), {}) 
@@ -24,7 +42,10 @@ export const objMap = (obj, fn) => kv(obj).reduce((o, { k, v }) => merge(o, { [k
 export const objForEach = objMap
 export const doAsync = (fn, ms = 0) => new Promise(resolve => setTimeout(() => resolve(fn()), ms))
 export const isArray = thing => Array.isArray(thing)
+export const isArr = isArray
 export const isString = thing => typeof thing === 'string'
+export const isFn = thing => typeof thing === 'function'
+export const isObj = thing => typeof thing === 'object' && !!thing
 export const noop = () => undefined
 export const sleep = ms => new Promise(r => setTimeout(r, ms))
 export const wait = sleep
@@ -148,10 +169,10 @@ export const createPropComparator = () => {
 }
 
 export class Emitter {
-  constructor() { this.handlers = [] }
+  constructor() { this.handlers = []; this.last = undefined }
   subscribe(handler) { this.handlers.push(handler) }
   unsubscribe(handler) { this.handlers = this.handlers.filter(h => h !== handler)}
-  emit(result) { this.handlers.forEach(handler => handler(result)) }
+  emit(result) { this.last = result; this.handlers.forEach(handler => handler(result)) }
 }
 
 export const trimStart = str => {
