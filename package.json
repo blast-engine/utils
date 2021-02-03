@@ -1,6 +1,6 @@
 {
   "name": "@blast-engine/utils",
-  "version": "2.1.38",
+  "version": "2.1.39",
   "license": "UNLICENSED",
   "main": "dist/utils.js",
   "scripts": {
