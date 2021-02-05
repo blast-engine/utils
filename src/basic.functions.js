@@ -45,7 +45,8 @@ export const isArray = thing => Array.isArray(thing)
 export const isArr = isArray
 export const isString = thing => typeof thing === 'string'
 export const isFn = thing => typeof thing === 'function'
-export const isObj = thing => typeof thing === 'object' && !!thing
+export const isBool = thing => typeof thing === 'boolean'
+export const isObj = (...things) => things.every(thing => typeof thing === 'object' && !!thing)
 export const noop = () => undefined
 export const sleep = ms => new Promise(r => setTimeout(r, ms))
 export const wait = sleep
@@ -70,8 +71,8 @@ export const ensureParamsProvided = params => {
 }
 
 export const compareByKeyValue = (obj1, obj2) => {
-  if (obj1 === null && obj2 !== null) return false
-  if (obj2 === null && obj1 !== null) return false
+  if (obj1 === obj2) return true
+  if (obj1 === null || obj2 === null) return false
   const k1 = k(obj1)
   const k2 = k(obj2)
   return (
