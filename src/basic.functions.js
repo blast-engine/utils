@@ -56,8 +56,16 @@ export const arrayOf = (length = 0) => (new Array(length)).fill(true)
 export const ellipsis = (str = '', maxLength) =>
   (str.length > maxLength) ? str.substring(0, maxLength).trim() + '...' : str
 export const distinct = unique
-export const timeout = (fn = () => null, ms = 0) => 
-  new Promise(resolve => setTimeout(async () => { await fn(); resolve() }, ms))
+export const timeout = (fn = () => null, ms = 0) => {
+  if (typeof fn === 'number') {
+    ms = fn
+    fn = () => null
+  }
+  return new Promise(resolve => 
+    setTimeout(async () => { await fn(); resolve() }, ms)
+  )
+}
+  
 
 export const findUndefined = obj => { 
   const undef = kv(obj).find(({ v }) => v === undefined)
