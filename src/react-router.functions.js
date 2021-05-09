@@ -9,11 +9,15 @@ export const routerPrefix = (match) => {
 const relativeLocation = (location, prefix) =>
   location.pathname.substr(prefix.length)
 
+const absoluteLocation = location => 
+  location.pathname
+
 const parseCurrentRoute = ({ match, location }) => {
   const prefix = routerPrefix(match)
+  const absloc = absoluteLocation(location)
   const relloc = relativeLocation(location, prefix)
   const rellocArr = relloc.split('/').slice(1)
-  return { prefix, relloc, rellocArr }
+  return { prefix, relloc, rellocArr, absloc }
 }
 
 export const router = { 
