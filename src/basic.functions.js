@@ -88,8 +88,6 @@ export const compareByKeyValue = (obj1, obj2) => {
   )
 }
 
-
-
 export const encodeForFbKey = str => {
   return str.replace(/\./g, '_x_dot_x_')
 }
