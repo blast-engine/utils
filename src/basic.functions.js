@@ -221,3 +221,14 @@ export const debounce = (func, delay) => {
     inDebounce = setTimeout(() => func.apply(context, args), delay)
   }
 }
+
+export const runScript = async (fn = async () => null) => {
+  await fn()
+  setInterval(() => null, 20000)
+}
+
+export const runScriptAndExit = async (fn = async () => null) => {
+  await fn()
+  process.exit()
+}
+

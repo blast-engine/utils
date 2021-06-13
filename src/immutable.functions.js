@@ -19,7 +19,7 @@ const _setAtPathInternal = (object = {}, pathArray = [], value) => {
 }
 
 const _setAtPath = (object = {}, path = 'example.path', value) => { 
-  return _setAtPathInternal(object, path.split('.'), value)
+  return _setAtPathInternal(object, path.split(/\.|\//), value)
 }
 
 const _applyTransitionMap = (state, transitionMap) => {
