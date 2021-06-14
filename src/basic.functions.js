@@ -222,7 +222,7 @@ export const debounce = (func, delay) => {
   }
 }
 
-export const runScript = async (fn = async () => null) => {
+export const runScriptAndKeepAlive = async (fn = async () => null) => {
   await fn()
   setInterval(() => null, 20000)
 }
