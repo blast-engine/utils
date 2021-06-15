@@ -44,9 +44,10 @@ export const doAsync = (fn, ms = 0) => new Promise(resolve => setTimeout(() => r
 export const isArray = thing => Array.isArray(thing)
 export const isArr = isArray
 export const isString = thing => typeof thing === 'string'
+export const isStr = isString
 export const isFn = thing => typeof thing === 'function'
 export const isBool = thing => typeof thing === 'boolean'
-export const isObj = (...things) => things.every(thing => typeof thing === 'object' && !!thing)
+export const isObj = (...things) => things.every(thing => typeof thing === 'object' && !!thing && !isArr(isObj))
 export const noop = () => undefined
 export const sleep = ms => new Promise(r => setTimeout(r, ms))
 export const wait = sleep
