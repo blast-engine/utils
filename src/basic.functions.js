@@ -39,6 +39,7 @@ export const asArray = obj => Object.keys(obj).map(k => ({ ...obj[k], _key: k })
 export const pairs = kv
 export const kvr = kv => kv.reduce((o, { k, v }) => merge(o, { [k]: v }), {}) 
 export const objMap = (obj, fn) => kv(obj).reduce((o, { k, v }) => merge(o, { [k]: fn(v, k) }), {})
+export const objKeyMap = (obj, fn) => kv(obj).reduce((o, { k, v }) => merge(o, { [fn(v, k)]: v }), {})
 export const objForEach = objMap
 export const doAsync = (fn, ms = 0) => new Promise(resolve => setTimeout(() => resolve(fn()), ms))
 export const isArray = thing => Array.isArray(thing)
@@ -71,6 +72,15 @@ export const findUndefined = obj => {
   const undef = kv(obj).find(({ v }) => v === undefined)
   if (!undef) return null
   else return undef.k
+}
+
+export const ensure = (checkTrue, handleFail) => {
+  if (!(checkTrue())) handleFail()
+}
+
+export const logAndThrow = ({ msg, dump }) => {
+  console.log(`ERROR: ${msg}`, dump)
+  throw new Error(msg)
 }
 
 export const ensureParamsProvided = params => {
