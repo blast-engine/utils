@@ -1,7 +1,7 @@
 import safeAccess from 'safe-access'
 
 export const safe = safeAccess
-export const get = safe
+// export const get = safe
 export const assign = Object.assign
 export const keys = obj => Object.keys(obj || {})
 export const k = keys
@@ -39,13 +39,14 @@ export const asArray = obj => Object.keys(obj).map(k => ({ ...obj[k], _key: k })
 export const pairs = kv
 export const kvr = kv => kv.reduce((o, { k, v }) => merge(o, { [k]: v }), {}) 
 export const objMap = (obj, fn) => kv(obj).reduce((o, { k, v }) => merge(o, { [k]: fn(v, k) }), {})
-export const objKeyMap = (obj, fn) => kv(obj).reduce((o, { k, v }) => merge(o, { [fn(v, k)]: v }), {})
+export const objKeyMap = (obj, fn) => kv(obj).reduce((o, { k, v }) => merge(o, { [fn(k, v)]: v }), {})
 export const objForEach = objMap
 export const doAsync = (fn, ms = 0) => new Promise(resolve => setTimeout(() => resolve(fn()), ms))
 export const isArray = thing => Array.isArray(thing)
 export const isArr = isArray
 export const isString = thing => typeof thing === 'string'
 export const isStr = isString
+export const isNum = thing => typeof thing === 'number'
 export const isFn = thing => typeof thing === 'function'
 export const isBool = thing => typeof thing === 'boolean'
 export const isObj = (...things) => things.every(thing => typeof thing === 'object' && !!thing && !isArr(isObj))

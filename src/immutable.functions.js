@@ -1,6 +1,24 @@
 import safe from 'safe-access'
+import * as b from './basic.functions'
 
 const DELETE_FLAG = '__*delete*__'
+
+export const PATH_DELIMITER_REGEX = /\.|\//
+export const DEFAULT_PATH_DELIMITER = '/'
+
+export const pathToArray = path => {
+  if (b.isArr(path)) return path
+  return path.split(PATH_DELIMITER_REGEX)
+}
+
+export const pathToString = (path, delimiter = DEFAULT_PATH_DELIMITER) => {
+  if (b.isStr(path)) return path
+  return path.join(delimiter)
+}
+
+export const setStrPathDelimiter = (path, delimiter = DEFAULT_PATH_DELIMITER) => {
+  return pathToString(pathToArray(path), delimiter)
+}
 
 const _setAtPathInternal = (object = {}, pathArray = [], value) => {
   if (!pathArray.length)
@@ -18,12 +36,13 @@ const _setAtPathInternal = (object = {}, pathArray = [], value) => {
     }
 }
 
-const _setAtPath = (object = {}, path = 'example.path', value) => { 
-  return _setAtPathInternal(object, path.split(/\.|\//), value)
+const _setAtPath = (object = {}, path = '', value) => { 
+  return _setAtPathInternal(object, pathToArray(path), value)
 }
 
-const _applyTransitionMap = (state, transitionMap) => {
-  return Object.keys(transitionMap)
+const _applyTransitionMap = (state, _transitionMap) => {
+  const transitionMap = b.objKeyMap(_transitionMap, path => setStrPathDelimiter(path, '.'))
+  return b.keys(transitionMap)
     .reduce((nextStateInConstruction, path) => {
       const prevSubState = safe(state, path)
       const nextSubState = typeof transitionMap[path] === 'function'
@@ -34,7 +53,7 @@ const _applyTransitionMap = (state, transitionMap) => {
 
 }
 
-export const get = (obj = {}, path) => safe(obj, path)
+export const get = (obj = {}, path) => safe(obj, setStrPathDelimiter(path, '.'))
 export const set = (obj = {}, transitionMap) => _applyTransitionMap(obj, transitionMap)
 export const unset = (obj = {}, paths) => {
   const pathsArray = Array.isArray(paths) ? paths : [paths]
