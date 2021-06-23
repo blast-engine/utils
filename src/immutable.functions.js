@@ -1,7 +1,7 @@
 import safe from 'safe-access'
 import * as b from './basic.functions'
 
-const DELETE_FLAG = '__*delete*__'
+export const DELETE = Symbol('delete')
 
 export const PATH_DELIMITER_REGEX = /\.|\//
 export const DEFAULT_PATH_DELIMITER = '/'
@@ -25,7 +25,7 @@ const _setAtPathInternal = (object = {}, pathArray = [], value) => {
     throw new Error('INVALID PATH ARRAY')
   else if (pathArray.length === 1) {
     const clone = { ...object }
-    if (value === DELETE_FLAG) delete clone[pathArray[0]] 
+    if (value === DELETE) delete clone[pathArray[0]] 
     else clone[pathArray[0]] = value
     return clone
   }
@@ -57,7 +57,7 @@ export const get = (obj = {}, path) => safe(obj, setStrPathDelimiter(path, '.'))
 export const set = (obj = {}, transitionMap) => _applyTransitionMap(obj, transitionMap)
 export const unset = (obj = {}, paths) => {
   const pathsArray = Array.isArray(paths) ? paths : [paths]
-  const transitionMap = pathsArray.reduce((tm, p) => ({ [p]: DELETE_FLAG, ...tm }), {})
+  const transitionMap = pathsArray.reduce((tm, p) => ({ [p]: DELETE, ...tm }), {})
   return set(obj, transitionMap)
 }
 

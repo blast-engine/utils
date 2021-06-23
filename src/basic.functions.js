@@ -36,6 +36,7 @@ export const shallowClone = merge
 export const arrayClone = arr => arr.slice(0)
 export const kv = (obj, propMap = { k: 'k', v: 'v' }) => keys(obj).map(k => ({ [propMap['k']]: k, [propMap['v']]: obj[k] }))
 export const asArray = obj => Object.keys(obj).map(k => ({ ...obj[k], _key: k }))
+export const enforceArray = thing => isArr(thing) ? thing : [ thing ]
 export const pairs = kv
 export const kvr = kv => kv.reduce((o, { k, v }) => merge(o, { [k]: v }), {}) 
 export const objMap = (obj, fn) => kv(obj).reduce((o, { k, v }) => merge(o, { [k]: fn(v, k) }), {})
