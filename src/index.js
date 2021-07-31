@@ -5,4 +5,3 @@ export * from './time.functions'
 export * from './react.functions'
 export * from './react-router.functions'
 export * from './immutable.functions'
-

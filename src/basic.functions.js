@@ -40,6 +40,8 @@ export const enforceArray = thing => isArr(thing) ? thing : [ thing ]
 export const pairs = kv
 export const kvr = kv => kv.reduce((o, { k, v }) => merge(o, { [k]: v }), {}) 
 export const objMap = (obj, fn) => kv(obj).reduce((o, { k, v }) => merge(o, { [k]: fn(v, k) }), {})
+export const objFilter = (obj, fn) => 
+  kv(obj).reduce((o, { k, v }) => { if (!fn(k, v)) return o; return merge(o, { [k]: v }) }, {})
 export const objKeyMap = (obj, fn) => kv(obj).reduce((o, { k, v }) => merge(o, { [fn(k, v)]: v }), {})
 export const objForEach = objMap
 export const doAsync = (fn, ms = 0) => new Promise(resolve => setTimeout(() => resolve(fn()), ms))
@@ -118,6 +120,14 @@ export const arraysHaveSameItems = (arr1, arr2, itemsAreEqual = thingsAreStrictl
   if (arr1.length !== arr2.length) return false
   return arr1.every(i1 => arr2.some(i2 => itemsAreEqual(i1, i2)))
 }
+
+export const withProvisionMethod = obj => {
+  const provision = createFunctionProvisioners(obj)
+  return { ...obj, provision }
+}
+
+export const createFunctionProvisioners = (fns = {}) => (provisions = {}) =>
+  objMap(fns, fn => (args = {}) => fn({ ...provisions, ...args }))
 
 export const arraysAreSame = (arr1, arr2, itemsAreEqual = thingsAreStrictlyEqual) => {
   if (!Array.isArray(arr1) || !Array.isArray(arr2)) return false
