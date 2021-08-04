@@ -78,6 +78,18 @@ export const findUndefined = obj => {
   else return undef.k
 }
 
+export const removeFunctionsDeep = obj => {
+  if (typeof obj !== 'object') return null
+  return objMap(obj, v => {
+    let cleanV
+    if (typeof v === 'function') cleanV = null
+    else if (v === null) cleanV = null
+    else if (typeof v === 'object') cleanV = removeFunctionsDeep(v)
+    else cleanV = v
+    return cleanV
+  })
+}
+
 export const ensure = (checkTrue, handleFail) => {
   if (!(checkTrue())) handleFail()
 }
