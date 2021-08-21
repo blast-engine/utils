@@ -78,13 +78,9 @@ export class ImmutableReadOnly {
     return this._raw
   }
 
-  get(...args) {
-    return this._get(...args)
-  }
-
-  _get(path) {
-    if (!path) return this._raw
-    return g(this._raw, path)
+  get(path) {
+    if (!path) return this.raw()
+    return g(this.raw(), path)
   }
 }
 
