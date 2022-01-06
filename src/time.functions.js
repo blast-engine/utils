@@ -1,6 +1,5 @@
 
 export function howLongAgo(previous, current = Date.now()) {
-
   var msPerSecond = 1000;
   var msPerMinute = 60 * msPerSecond;
   var msPerHour = msPerMinute * 60;
@@ -46,16 +45,13 @@ export function howLongAgo(previous, current = Date.now()) {
 }
 
 export function howLongFromNow(then, now) {
-
   var msPerSecond = 1000;
   var msPerMinute = 60 * msPerSecond;
   var msPerHour = msPerMinute * 60;
   var msPerDay = msPerHour * 24;
   var msPerMonth = msPerDay * 30;
   var msPerYear = msPerDay * 365;
-  
   var remaining = then - now;
-
   let eventDate = new Date(then)
 
   if (remaining < msPerSecond * 10) {

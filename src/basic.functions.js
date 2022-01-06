@@ -90,6 +90,19 @@ export const removeFunctionsDeep = obj => {
   })
 }
 
+export const ensureFailWarn = e => console.error(`${e.msg} \n ${e.stack}`)
+export const ensureFailThrow = e => { throw new Error(`${e.msg} \n ${e.stack}`) }
+export const createEnsureFn = 
+  ({ disable = false, onFail = ensureFailThrow } = {}) => 
+  ({ check, failMsg } = {}) => {
+    if (disable) return
+    if (check()) return
+    let stack 
+    try { throw new Error() }
+    catch(e) { stack = e.stack }
+    onFail({ msg: failMsg, stack })
+  }
+
 export const ensure = (checkTrue, handleFail) => {
   if (!(checkTrue())) handleFail()
 }
@@ -256,3 +269,19 @@ export const debounce = (func, delay) => {
     inDebounce = setTimeout(() => func.apply(context, args), delay)
   }
 }
+
+export const glob = (thing, names = []) => {
+  const global = window || global
+  names.forEach(n => global[n] = thing)
+  return thing
+}
+export const g = glob
+
+export const applyDefaults = (obj = {}, defaults = {}) => {
+  return kv(obj).reduce((normalized, i) => {
+    const dv = defaults[i.k]
+    let value = i.v
+    if (value === undefined && dv !== undefined) value = dv
+    return { ...normalized, [i.k]: value }
+  }, {})
+} 

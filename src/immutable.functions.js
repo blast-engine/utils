@@ -7,13 +7,17 @@ export const PATH_DELIMITER_REGEX = /\.|\//
 export const DEFAULT_PATH_DELIMITER = '/'
 
 export const pathToArray = path => {
+  if (!path) return []
   if (b.isArr(path)) return path
-  return path.split(PATH_DELIMITER_REGEX)
+  if (b.isString(path)) return path.split(PATH_DELIMITER_REGEX)
+  throw new Error(`path "${path}" is neither a string nor an array`)
 }
 
 export const pathToString = (path, delimiter = DEFAULT_PATH_DELIMITER) => {
-  if (b.isStr(path)) return path
-  return path.join(delimiter)
+  if (!path) return ''
+  if (b.isString(path)) return path 
+  if (b.isArray(path)) return path.join(delimiter)
+  throw new Error(`path "${path}" is neither a string nor an array`)
 }
 
 export const setStrPathDelimiter = (path, delimiter = DEFAULT_PATH_DELIMITER) => {
